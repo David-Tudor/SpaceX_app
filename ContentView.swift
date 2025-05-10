@@ -45,9 +45,10 @@ struct ContentView: View {
         do {
             Task {
                 companyData = try await getData(from: "https://api.spacexdata.com/v4/company")
-                launchData = try await getDataArray(from: "https://api.spacexdata.com/v5/launches")
-                rocketData = try await getDataArray(from: "https://api.spacexdata.com/v4/rockets")
+                launchData = try await getData(from: "https://api.spacexdata.com/v5/launches")
+                rocketData = try await getData(from: "https://api.spacexdata.com/v4/rockets")
             }
+            print("Data pulled")
             
         } catch {
             print(error)
@@ -85,7 +86,7 @@ struct ContentView: View {
                 Text("Time since")
                 
             }
-//            .frame(width: 75)
+            //            .frame(width: 75)
             
             VStack(alignment: .leading) {
                 // Mission name
@@ -93,10 +94,10 @@ struct ContentView: View {
                 
                 // Date
                 if let date = dateFormatter.date(from: launch.date_local) {
-                    Text("\(date.formatted(date: .abbreviated, time: .shortened))".padding(toLength: 20, withPad: " ", startingAt: 0) )
+                    Text("\(date.formatted(date: .numeric, time: .omitted))".padding(toLength: 20, withPad: " ", startingAt: 0) )
                         .foregroundColor(Color(colGrey))
                         .font(.system(size: smallerText, weight: .regular))
-//                        .fixedSize(horizontal: false, vertical: true) // makes it wrap
+                    //                        .fixedSize(horizontal: false, vertical: true) // makes it wrap
                 }
                 
                 // Rocket
@@ -118,57 +119,15 @@ struct ContentView: View {
             .frame(height: 80)
         }
         
-        
-//        VStack {
-//            HStack(alignment: .leading) {
-//                Text("Mission")
-//                    .frame(width: colWidth)
-//                Text("\(launch.name)")
-//            }
-//            
-//            HStack {
-//                Text("Date/time")
-//                    .frame(width: colWidth)
-//                
-//                if let date = dateFormatter.date(from:launch.date_local) {
-//                    Text("\(date.formatted(date: .abbreviated, time: .shortened))".padding(toLength: 20, withPad: " ", startingAt: 0) )
-//                        .foregroundColor(Color(colGrey))
-//                        .font(.system(size: smallerText, weight: .regular))
-//                        .fixedSize(horizontal: false, vertical: true)
-//                }
-//            }
-//            
-//            HStack {
-//                Text("Rocket")
-//                    .frame(width: colWidth)
-//                
-//                if let rocket = rocketData.first(where: { item in item.id == launch.rocket}) {
-//                    Text(rocket.name)
-//                    //                        .frame(alignment: .leading)
-//                } else {
-//                    Text("Unknown")
-//                }
-//            }
-//            
-//            HStack {
-//                // Text(true ? "Days since now" : "Days from now") // XXX all are in the past? There is an "upcoming" variable.
-//                Text("Time since")
-//                    .frame(width: colWidth)
-//                //                    let currentDate = NSDate()
-//                //                    let diffInDays = Calendar.current.dateComponents([.day], from: launch.date_local, to: currentDate).day
-//                //                    Text("\(launch.date_local)")
-//                //                    Text("\(currentDate)")
-//            }
     }
     
     // XXX how many of these views rely on being in content view for the data - or could they be extracted.?
     func buildListItemView(with launch: Launch) -> some View {
-        ZStack (alignment: .topLeading) {
-            RoundedRectangle(cornerSize: CGSize(width: cornerSize, height: cornerSize))
-                .fill(Color(launch.success == true ? colGreen : colRed))
+        
+        
+        HStack {
             
-            HStack {
-            
+            Group {
                 // Get patch image
                 if let imageLink = launch.links.patch.small {
                     AsyncImage(url: URL(string: imageLink)) { image in
@@ -176,45 +135,64 @@ struct ContentView: View {
                             .resizable()
                             .scaledToFit()
                     } placeholder: {}
-                    .frame(width: 60, height: 60)
+                    //                            .frame(width: 60, height: 60)
                 } else {
                     // If image doesn't exist, show a question mark. XXX how to make symbols bigger.
-                    ZStack(alignment: .center) {
-                        Image(systemName: "questionmark.circle")
-                            .symbolVariant(.circle)
-                            .imageScale(.large)
-                    }
+                    Image(systemName: "questionmark.circle")
+                        .symbolVariant(.circle)
+                        .imageScale(.large)
+                    
                 }
-                
-                buildLaunchInfoView(for: launch)
-                
-                // Show success or failure
-                Image(systemName: launch.success == true ? "checkmark" : "xmark")
-                    .symbolVariant(.circle)
-                    .imageScale(.large)
-
             }
+            .frame(width: 60, height: 60)
+            
+            buildLaunchInfoView(for: launch)
+            
+            // Show success or failure
+            Image(systemName: launch.success == true ? "checkmark" : "xmark")
+                .symbolVariant(.circle)
+                .imageScale(.large)
+            
         }
-        .frame(height: 100)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerSize: CGSize(width: cornerSize, height: cornerSize))
+                .fill(Color(launch.success == true ? colGreen : colRed))
+        )
+        
+        
+        //        .frame(height: 100)
     }
     
     func buildMenu() -> some View {
-        Menu("Filter launches") {
+        
+        Menu {
+            
             Button("Refresh") {
-                pullData() // XXX Can't find a way to test that this works
+                pullData()
             }
             Divider()
             
             Toggle("Successful rockets only", isOn: $should_only_show_successes)
             Divider()
             
-            Slider( // XXX Why does this look weird?
-                    value: $numLaunchesShown,
-                    in:    1...20,
-                    step: 1,
+            VStack {
+                Text("Number of launches shown:")
+                HStack {
+                    Slider( // XXX Why does this look weird?
+                        value: $numLaunchesShown,
+                        in:    1...20,
+                        step: 1,
                     )
-                    Text("Number of launches shown: \(Int(numLaunchesShown))")
-                    
+                    Text("\(Int(numLaunchesShown))")
+                }
+                
+                
+            }
+            
+        } label: {
+            Image(systemName: "gear")
+                .font(.system(size: 24))
         }
     }
     
@@ -232,7 +210,7 @@ struct ContentView: View {
                     .frame(width: 180, height: 180)
             }
             buildLaunchInfoView(for: launch)
-                
+            
             // Youtube and wiki links
             Text("")
             VStack(alignment: .leading) {
@@ -249,24 +227,26 @@ struct ContentView: View {
     
     
     var body: some View {
-        VStack {
-            // Title
-            HStack {
-                Text("SpaceX")
-                    .bold()
-                Spacer()
-                
-                buildMenu()
-            }
-            
-            // Company
-            buildSectionTitle(saying: "Company")
-            buildCompanyText()
-            
-            // Launch list
-            buildSectionTitle(saying: "Launches")
-            NavigationView {
-                ScrollView {
+        NavigationView {
+            ScrollView {
+                VStack {
+                    // Title
+                    HStack {
+                        Text("SpaceX")
+                            .bold()
+                        Spacer()
+                        
+                        
+                    }
+                    
+                    // Company
+                    buildSectionTitle(saying: "Company")
+                    buildCompanyText()
+                    
+                    // Launch list
+                    buildSectionTitle(saying: "Launches")
+                    
+                    
                     VStack {
                         ForEach(0..<filteredLaunchData.count, id: \.self) { i in
                             NavigationLink(destination: launchDetailsView(for: filteredLaunchData.reversed()[i])) {
@@ -277,12 +257,17 @@ struct ContentView: View {
                 }
             }
             .buttonStyle(PlainButtonStyle())
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing) {
+                    buildMenu()
+                }
+            })
         }
         .padding(10)
-        .task {
+        .onAppear {
             pullData()
         }
-    
+        
     }
 }
 
@@ -295,16 +280,6 @@ func getData<T: Decodable>(from urlInput: String) async throws -> T {
     
     return try decoder.decode(T.self, from: data)
 }
-
-func getDataArray<T: Decodable>(from urlInput: String) async throws -> [T] {
-    let url = URL(string: urlInput)!
-    let request = URLRequest(url: url)
-    let (data, _) = try await URLSession.shared.data(for: request)
-    let decoder = JSONDecoder()
-    
-    return try decoder.decode([T].self, from: data)
-}
-
 
 struct Patch: Decodable {
     let small: String?
@@ -333,7 +308,7 @@ struct Launch: Decodable, Identifiable {
     let date_local: String
     let launch_library_id: String?
     let id: String
-//    let upcoming: Bool // all are in the past
+    //    let upcoming: Bool // all are in the past
 }
 
 
