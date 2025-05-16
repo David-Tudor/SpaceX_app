@@ -12,7 +12,7 @@ struct LaunchInfoView: View {
         self.launch = launch
     }
     
-    var body: some View {
+    var body: some View { 
         HStack {
             VStack(alignment: .leading) {
                 Text("Mission")

@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  SpaceXNetwork
-//
-//  Created by David Tudor on 12/05/2025.
-//
-
 import Foundation
 import SwiftUI
 

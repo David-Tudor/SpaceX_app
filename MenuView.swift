@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  SpaceXNetwork
-//
-//  Created by David Tudor on 12/05/2025.
-//
-
 import Foundation
 import SwiftUI
 
@@ -12,7 +5,7 @@ import SwiftUI
 struct MenuView: View {
     @EnvironmentObject var dataHolder: DataHolder
     
-    var body: some View { // All these features need to talk to Main.
+    var body: some View {
         Menu {
             
             Button("Refresh") {

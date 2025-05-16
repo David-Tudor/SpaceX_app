@@ -13,11 +13,6 @@ extension Color {
 }
 
 struct ContentView: View {
-//    @State var launchData: [Launch] = []
-//    @State var rocketData: [Rocket] = []
-//    @State var companyData: Company?
-//    @State var should_only_show_successes = false
-//    @State var numLaunchesShown = 10.0 // XXX strange I needed to make this a double.
     @StateObject var dataHolder = DataHolder()
     
     let dateFormatter = ISO8601DateFormatter()
@@ -26,10 +21,8 @@ struct ContentView: View {
     let cornerSize = 15
     let biggerText: CGFloat = 18
     let smallerText: CGFloat = 16
-    let colBlack: UInt = 0x000000
-    let colGrey: UInt = 0x4A4A4D
-    let colBlue1: UInt = 0xDBD8FF
-    let colBlue2: UInt = 0xEEEBFF
+//    let colBlack: UInt = 0x000000
+//    let colGrey: UInt = 0x4A4A4D
     
     var filteredLaunchData: [Launch] {
         var temp_data = dataHolder.launchData

@@ -7,6 +7,7 @@ func getData<T: Decodable>(from urlInput: String) async throws -> T {
     let request = URLRequest(url: url, cachePolicy: .reloadRevalidatingCacheData)
     let (data, _) = try await URLSession.shared.data(for: request)
     let decoder = JSONDecoder()
+    print("Pulled data from \(urlInput)")
     
     return try decoder.decode(T.self, from: data)
 }
@@ -15,7 +16,7 @@ struct Patch: Decodable {
     let small: String?
 }
 
-struct Link: Decodable { // XXX Any better way than making lots of structs??
+struct Link: Decodable {
     let patch: Patch
     let webcast: String?
     let wikipedia: String?
