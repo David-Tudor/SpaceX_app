@@ -9,16 +9,15 @@ import Foundation
 import SwiftUI
 
 struct ListItemView: View {
+    @EnvironmentObject var dataHolder: DataHolder
     let launch: Launch
-    let rocketData: [Rocket]
     
     let cornerSize = 15
     let colGreen: UInt = 0xb3e6b3
     let colRed: UInt = 0xff8080
     
-    init(_ launch: Launch, _ rocketData: [Rocket]) {
+    init(_ launch: Launch) {
         self.launch = launch
-        self.rocketData = rocketData
     }
     
     var body: some View {
@@ -43,7 +42,7 @@ struct ListItemView: View {
             }
             .frame(width: 60, height: 60)
             
-            LaunchInfoView(launch, rocketData)
+            LaunchInfoView(launch)
             
             // Show success or failure
             Image(systemName: launch.success == true ? "checkmark" : "xmark")

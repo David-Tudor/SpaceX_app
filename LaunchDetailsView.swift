@@ -11,12 +11,13 @@ import SwiftUI
 
 struct LaunchDetailsView: View {
     // When a launch is clicked, show some more information
+    @EnvironmentObject var dataHolder: DataHolder
     let launch: Launch
-    let rocketData: [Rocket]
+//    let rocketData: [Rocket]
     
-    init(_ launch: Launch, _ rocketData: [Rocket]) {
+    init(_ launch: Launch) { // , _ rocketData: [Rocket]
         self.launch = launch
-        self.rocketData = rocketData
+//        self.rocketData = rocketData
     }
     
     var body: some View {
@@ -30,7 +31,7 @@ struct LaunchDetailsView: View {
                 } placeholder: {}
                     .frame(width: 180, height: 180)
             }
-            LaunchInfoView(launch, rocketData)
+            LaunchInfoView(launch)
             
             // Youtube and wiki links
             Text("")

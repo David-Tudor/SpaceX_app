@@ -1,44 +1,45 @@
-////
-////  File.swift
-////  SpaceXNetwork
-////
-////  Created by David Tudor on 12/05/2025.
-////
 //
-//import Foundation
-//import SwiftUI
+//  File.swift
+//  SpaceXNetwork
 //
+//  Created by David Tudor on 12/05/2025.
 //
-//struct MenuView: View {
-//    
-//    var body: some View {
-//        Menu {
-//            
-//            Button("Refresh") {
-//                pullData()
-//            }
-//            Divider()
-//            
-//            Toggle("Successful rockets only", isOn: $should_only_show_successes)
-//            Divider()
-//            
-//            VStack {
-//                Text("Number of launches shown:")
-//                HStack {
-//                    Slider( // XXX Why does this look weird?
-//                        value: $numLaunchesShown,
-//                        in:    1...20,
-//                        step: 1,
-//                    )
-//                    Text("\(Int(numLaunchesShown))")
-//                }
-//                
-//                
-//            }
-//            
-//        } label: {
-//            Image(systemName: "gear")
-//                .font(.system(size: 24))
-//        }
-//    }
-//}
+
+import Foundation
+import SwiftUI
+
+
+struct MenuView: View {
+    @EnvironmentObject var dataHolder: DataHolder
+    
+    var body: some View { // All these features need to talk to Main.
+        Menu {
+            
+            Button("Refresh") {
+                dataHolder.pullData()
+            }
+            Divider()
+            
+            Toggle("Successful rockets only", isOn: $dataHolder.should_only_show_successes)
+            Divider()
+            
+            VStack {
+                Text("Number of launches shown:")
+                HStack {
+                    Slider( // XXX Why does this look weird?
+                        value: $dataHolder.numLaunchesShown,
+                        in:    1...20,
+                        step: 1,
+                    )
+                    Text("\(Int(dataHolder.numLaunchesShown))")
+                }
+                
+                
+            }
+            
+        } label: {
+            Image(systemName: "gear")
+                .font(.system(size: 24))
+        }
+    }
+}

@@ -1,23 +1,15 @@
-//
-//  File.swift
-//  SpaceXNetwork
-//
-//  Created by David Tudor on 12/05/2025.
-//
-
 import Foundation
 import SwiftUI
 
 struct LaunchInfoView: View {
     // Make two columns with launch info.
     
+    @EnvironmentObject var dataHolder: DataHolder
     let launch: Launch
-    let rocketData: [Rocket] // XXX probably a better method for source of truth than direct passing.
     let dateFormatter = ISO8601DateFormatter()
     
-    init(_ launch: Launch, _ rocketData: [Rocket]) {
+    init(_ launch: Launch) {
         self.launch = launch
-        self.rocketData = rocketData
     }
     
     var body: some View {
@@ -44,7 +36,7 @@ struct LaunchInfoView: View {
                 }
                 
                 // Rocket
-                if let rocket = rocketData.first(where: { item in item.id == launch.rocket}) {
+                if let rocket = dataHolder.rocketData.first(where: { item in item.id == launch.rocket}) {
                     Text(rocket.name)
                 } else {
                     Text("Unknown")
