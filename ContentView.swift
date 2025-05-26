@@ -33,13 +33,19 @@ struct ContentView: View {
     }
     
     var body: some View {
-        // Keep trying to pull data while any are unfilled. XXX is there a better test to do?
-        VStack {
-            if (dataHolder.launchData.count == 0) || (dataHolder.rocketData.count == 0) || (dataHolder.companyData == nil) {
+        // Keep trying to pull data while any are unfilled.
+        Group {
+            if dataHolder.isLoading {
                 ProgressView()
-                    .onAppear {
-                        dataHolder.pullData()
+                
+            } else if !dataHolder.error.isEmpty {
+                Text(dataHolder.error)
+                    .foregroundColor(.red)
+                Button("Retry") {
+                    Task(priority: .high) {
+                        await dataHolder.pullData()
                     }
+                }
                 
             } else {
                 
@@ -80,9 +86,11 @@ struct ContentView: View {
                     })
                 }
                 .padding(10)
-//                .environmentObject(dataHolder)
             }
         }
         .environmentObject(dataHolder)
+        .task(priority: .high) {
+            await dataHolder.pullData()
+        }
     }
 }

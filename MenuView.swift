@@ -9,7 +9,9 @@ struct MenuView: View {
         Menu {
             
             Button("Refresh") {
-                dataHolder.pullData()
+                Task(priority: .high) {
+                    await dataHolder.pullData()
+                }
             }
             Divider()
             
