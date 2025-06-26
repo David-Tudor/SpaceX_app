@@ -1,8 +1,9 @@
 import Foundation
 import SwiftUI
 
+// Make two columns with launch info.
+
 struct LaunchInfoView: View {
-    // Make two columns with launch info.
     
     @EnvironmentObject var dataHolder: DataHolder
     let launch: Launch

@@ -1,8 +1,9 @@
 import Foundation
 import SwiftUI
 
+// Makes text backed by a grey box.
+
 struct SectionTitleView: View {
-    // Text titles with grey box background
     let text: String
     
     let cornerSize = 15

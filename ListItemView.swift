@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 
+// Gives a small amount of information about the launch.
+
 struct ListItemView: View {
     @EnvironmentObject var dataHolder: DataHolder
     let launch: Launch

@@ -1,4 +1,5 @@
 import SwiftUI
+import YouTubeKit
 
 extension Color {
     init(_ hex: UInt, alpha: Double = 1) {
@@ -14,6 +15,7 @@ extension Color {
 
 struct ContentView: View {
     @StateObject var dataHolder = DataHolder()
+    @StateObject var youTubeData = YouTubeData()
     
     let dateFormatter = ISO8601DateFormatter()
     
@@ -74,6 +76,8 @@ struct ContentView: View {
                                     NavigationLink(destination: LaunchDetailsView(launchFromList)) {
                                         ListItemView(launchFromList) // reversed so recent ones at the top
                                     }
+                                    
+                                
                                 }
                             }
                         }
@@ -89,6 +93,7 @@ struct ContentView: View {
             }
         }
         .environmentObject(dataHolder)
+        .environmentObject(youTubeData)
         .task(priority: .high) {
             await dataHolder.pullData()
         }

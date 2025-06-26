@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+// Makes the filter menu view.
 
 struct MenuView: View {
     @EnvironmentObject var dataHolder: DataHolder

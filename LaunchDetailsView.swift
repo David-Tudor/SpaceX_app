@@ -1,16 +1,17 @@
 import Foundation
 import SwiftUI
+import YouTubeKit
 
+// Gives full launch info. Accessed when a list item is clicked
 
 struct LaunchDetailsView: View {
-    // When a launch is clicked, show some more information
     @EnvironmentObject var dataHolder: DataHolder
-    let launch: Launch
-//    let rocketData: [Rocket]
+    @EnvironmentObject var youTubeData: YouTubeData
     
-    init(_ launch: Launch) { // , _ rocketData: [Rocket]
+    let launch: Launch
+    
+    init(_ launch: Launch) {
         self.launch = launch
-//        self.rocketData = rocketData
     }
     
     var body: some View {
@@ -29,13 +30,30 @@ struct LaunchDetailsView: View {
             // Youtube and wiki links
             Text("")
             VStack(alignment: .leading) {
-                if let linkWeb = launch.links.webcast {
-                    Text("Youtube link: \(linkWeb)")
-                }
                 if let linkWiki = launch.links.wikipedia {
                     Text("Wikipedia link: \(linkWiki)")
                 }
+                
                 Spacer()
+                
+                if let linkWeb = launch.links.webcast {
+                    Text("Youtube link: \(linkWeb)")
+                }
+            
+                if let imageLinkYT = youTubeData.thumbnail {
+                    AsyncImage(url: URL(string: imageLinkYT)) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    } placeholder: {}
+                        .frame(width: 180, height: 180)
+                }
+            
+            }
+            .onAppear {
+                if let linkWeb = launch.links.webcast {
+                    youTubeData.requestImage(from: linkWeb)
+                }
             }
         }
     }
